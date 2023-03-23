@@ -13,7 +13,7 @@ urls = [
 ]
 
 # Define the columns for the DataFrame
-columns = ['Player', 'Damage/Round', 'K/D Ratio', 'Headshot%', 'Win%']
+columns = ['Player', 'Rank','Damage/Round', 'K/D Ratio', 'Headshot%', 'Win%']
 
 # Create an empty DataFrame with the columns
 df = pd.DataFrame(columns=columns)
@@ -21,6 +21,13 @@ df = pd.DataFrame(columns=columns)
 for url in urls:
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
+
+    # Find the element containing the "Rank" stat
+    rank_elem = soup.find('div', {'class': 'label'}, string='Rating')
+    if rank_elem:
+        rank = rank_elem.find_next_sibling('div', {'class': 'value'}).text.strip()
+    else:
+        rank = "N/A"
 
     # Find the element containing the "Damage/Round" stat
     damage_per_round_elem = soup.find('span', {'title': 'Damage/Round'})
@@ -56,6 +63,7 @@ for url in urls:
     # Add the stats for the player to the DataFrame
     df = pd.concat([df, pd.DataFrame({
         'Player': username,
+        'Rank': rank,
         'Damage/Round': damage_per_round,
         'K/D Ratio': kd_ratio,
         'Headshot%': headshot_percentage,
@@ -63,6 +71,7 @@ for url in urls:
     }, index=[0])], ignore_index=True)
 
     print(f"Stats for {username}:")
+    print(f"Rank: {rank}")
     print(f"Damage/Round: {damage_per_round}")
     print(f"K/D Ratio: {kd_ratio}")
     print(f"Headshot%: {headshot_percentage}")
