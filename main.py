@@ -1,7 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import time
-from urllib.parse import unquote
 import pandas as pd
 
 urls = [
@@ -13,7 +11,7 @@ urls = [
 ]
 
 # Define the columns for the DataFrame
-columns = ['Player', 'Rank','Damage/Round', 'K/D Ratio', 'Headshot%', 'Win%']
+columns = ['Player', 'Rank', 'Damage/Round', 'K/D Ratio', 'Headshot%', 'Win%']
 
 # Create an empty DataFrame with the columns
 df = pd.DataFrame(columns=columns)
@@ -22,62 +20,26 @@ for url in urls:
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    # Find the element containing the "Rank" stat
-    rank_elem = soup.find('div', {'class': 'label'}, string='Rating')
-    if rank_elem:
-        rank = rank_elem.find_next_sibling('div', {'class': 'value'}).text.strip()
-    else:
-        rank = "N/A"
-
-    # Find the element containing the "Damage/Round" stat
-    damage_per_round_elem = soup.find('span', {'title': 'Damage/Round'})
-    if damage_per_round_elem:
-        damage_per_round = damage_per_round_elem.find_next_sibling('span').text.strip()
-    else:
-        damage_per_round = "N/A"
-
-    # Find the element containing the "K/D Ratio" stat
-    kd_ratio_elem = soup.find('span', {'title': 'K/D Ratio'})
-    if kd_ratio_elem:
-        kd_ratio = kd_ratio_elem.find_next_sibling('span').text.strip()
-    else:
-        kd_ratio = "N/A"
-
-    # Find the element containing the "Headshot%" stat
-    headshot_percentage_elem = soup.find('span', {'title': 'Headshot%'})
-    if headshot_percentage_elem:
-        headshot_percentage = headshot_percentage_elem.find_next_sibling('span').text.strip()
-    else:
-        headshot_percentage = "N/A"
-
-    # Find the element containing the "Win %" stat
-    win_percentage_elem = soup.find('span', {'title': 'Win %'})
-    if win_percentage_elem:
-        win_percentage = win_percentage_elem.find_next_sibling('span').text.strip()
-    else:
-        win_percentage = "N/A"
+    # Use dictionary comprehension to map the stat titles to the corresponding elements
+    stat_elems = {elem['title']: elem.find_next_sibling('span').text.strip() for elem in soup.find_all('span', {'title': True})}
 
     # Extract the username from the URL and replace any "%20" with a space
-    username = unquote(url.split('/')[-2]).replace('%20', ' ')
+    username = url.split('/')[-2].replace('%20', ' ')
 
-    # Add the stats for the player to the DataFrame
-    df = pd.concat([df, pd.DataFrame({
-        'Player': username,
-        'Rank': rank,
-        'Damage/Round': damage_per_round,
-        'K/D Ratio': kd_ratio,
-        'Headshot%': headshot_percentage,
-        'Win%': win_percentage
-    }, index=[0])], ignore_index=True)
+    # Find the element containing the rank and extract the text
+    rank_elem = soup.find('div', {'class': 'label'}, string='Rating')
+    rank = rank_elem.find_next_sibling('div', {'class': 'value'}).text.strip() if rank_elem else 'N/A'
+
+    # Use list comprehension to get the stats in the order defined by the columns
+    stats = [username, rank, stat_elems.get('Damage/Round', 'N/A'), stat_elems.get('K/D Ratio', 'N/A'), stat_elems.get('Headshot%', 'N/A'), stat_elems.get('Win %', 'N/A')]
+
+    # Concatenate the stats for the player to the DataFrame
+    df = pd.concat([df, pd.Series(stats, index=columns)], ignore_index=True)
 
     print(f"Stats for {username}:")
-    print(f"Rank: {rank}")
-    print(f"Damage/Round: {damage_per_round}")
-    print(f"K/D Ratio: {kd_ratio}")
-    print(f"Headshot%: {headshot_percentage}")
-    print(f"Win%: {win_percentage}")
+    for stat in zip(columns[1:], stats[1:]):
+        print(f"{stat[0]}: {stat[1]}")
     print()  # Print an empty line for readability
 
 # Export the DataFrame to an Excel file
 df.to_excel('valstats.xlsx', index=False)
-
