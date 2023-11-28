@@ -1,4 +1,48 @@
-# SDSU-Valorant-Tracker
-This program extracts various stats related to the popular video game Valorant from a player's profile on tracker.gg. It uses the requests and BeautifulSoup libraries to scrape the website and extract the desired information, including the player's rank, damage per round, K/D ratio, headshot percentage, and win percentage. Exporting it to XLSX File
+# Valorant Stats Tracker
 
-To change the players who you want to track just replace them with your own links.
+Welcome to the Valorant Stats Tracker! This Python script allows you to retrieve and track the performance statistics of Valorant players in both competitive and premier modes.
+
+## Table of Contents
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Screenshots](#screenshots)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+- **Competitive and Premier Stats:** Retrieve detailed statistics for Valorant players in both competitive and premier game modes.
+
+- **Player List Management:** Easily add, remove, or clear players from the tracking list.
+
+- **Data Export:** Save the collected statistics to an Excel file for further analysis.
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.x
+- Required Python packages: `requests`, `beautifulsoup4`, `pandas`
+
+Install the required packages using:
+
+```bash
+pip install requests beautifulsoup4 pandas
+
+Clone the Repository
+
+bash
+
+git clone https://github.com/your-username/valorant-stats-tracker.git
+cd valorant-stats-tracker
+
+Usage
+
+    Run the script:
+
+    bash
+
+python valorant_stats_tracker.py
+
+Follow the on-screen instructions to choose actions such as viewing competitive or premier stats, managing the player list, and exporting data.
