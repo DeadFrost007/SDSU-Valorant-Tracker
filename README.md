@@ -36,9 +36,9 @@ git clone https://github.com/your-username/valorant-stats-tracker.git
 cd valorant-stats-tracker
 ```
 
-### Usage
+## Usage
 
-    Run the script:
+## Run the script:
 
     ```bash python valorant_stats_tracker.py```
 
