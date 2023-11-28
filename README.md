@@ -40,9 +40,6 @@ cd valorant-stats-tracker
 
     Run the script:
 
-    ```bash
-
-python valorant_stats_tracker.py
-```
+    ```bash python valorant_stats_tracker.py```
 
 Follow the on-screen instructions to choose actions such as viewing competitive or premier stats, managing the player list, and exporting data.
