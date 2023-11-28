@@ -89,26 +89,28 @@ while True:
     elif choice == '4':
         break
     else:
-        break
+        for username in urls:
+            # Generate the URL based on the user's choice
+            url = get_stats_url(username, 'competitive' if choice == '1' else 'premier')
+            response = requests.get(url)
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            # Extract the Tracker Score
+            tracker_score_elem = soup.find('div', {'class': 'label'}, string='Tracker Score')
+            tracker_score = tracker_score_elem.find_next_sibling('div', {'class': 'value'}).text.strip() if tracker_score_elem else 'N/A'
+            
+            # Choose the appropriate function based on the choice
+            get_rank_function = get_competitive_rank if choice == '1' else get_premier_rank
+            rank = get_rank_function(soup)
+            
+            username_display = username.replace('%20', ' ').replace('%23', '#')
+            stats = [username_display, rank, get_stat(soup, 'name', 'Damage/Round'), get_stat(soup, 'name', 'K/D Ratio'), get_stat(soup, 'name', 'Headshot %'), get_stat(soup, 'name', 'Win %'), tracker_score]
+            df = pd.concat([df, pd.Series(stats, index=columns)], ignore_index=True)
+            
+            print(f"\nStats for {username_display} ({'Competitive' if choice == '1' else 'Premier'}):")
+            for stat in zip(columns[1:], stats[1:]):
+                print(f"{stat[0]}: {stat[1]}")
 
-for username in urls:
-    # Generate the URL based on the user's choice
-    url = get_stats_url(username, 'competitive' if choice == '1' else 'premier')
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, 'html.parser')
-    
-    # Extract the Tracker Score
-    tracker_score_elem = soup.find('div', {'class': 'label'}, string='Tracker Score')
-    tracker_score = tracker_score_elem.find_next_sibling('div', {'class': 'value'}).text.strip() if tracker_score_elem else 'N/A'
-    
-    # Choose the appropriate function based on the choice
-    get_rank_function = get_competitive_rank if choice == '1' else get_premier_rank
-    rank = get_rank_function(soup)
-    
-    username_display = username.replace('%20', ' ').replace('%23', '#')
-    stats = [username_display, rank, get_stat(soup, 'name', 'Damage/Round'), get_stat(soup, 'name', 'K/D Ratio'), get_stat(soup, 'name', 'Headshot %'), get_stat(soup, 'name', 'Win %'), tracker_score]
-    df = pd.concat([df, pd.Series(stats, index=columns)], ignore_index=True)
-    
-    print(f"\nStats for {username_display} ({'Competitive' if choice == '1' else 'Premier'}):")
-    for stat in zip(columns[1:], stats[1:]):
-        print(f"{stat[0]}: {stat[1]}")
+# Add this line to break out of the main loop when user chooses to quit
+print("Exiting the program. Goodbye!")
+
