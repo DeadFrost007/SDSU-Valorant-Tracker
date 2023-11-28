@@ -1,4 +1,4 @@
-# Valorant Stats Tracker
+# Valorant Stats Tracker (CLI)
 
 Welcome to the Valorant Stats Tracker! This Python script allows you to retrieve and track the performance statistics of Valorant players in both competitive and premier modes.
 
@@ -6,9 +6,6 @@ Welcome to the Valorant Stats Tracker! This Python script allows you to retrieve
 - [Features](#features)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
-- [Screenshots](#screenshots)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -29,20 +26,23 @@ Install the required packages using:
 
 ```bash
 pip install requests beautifulsoup4 pandas
+```
 
-Clone the Repository
+### Clone the Repository
 
-bash
+```bash
 
 git clone https://github.com/your-username/valorant-stats-tracker.git
 cd valorant-stats-tracker
+```
 
-Usage
+### Usage
 
     Run the script:
 
-    bash
+    ```bash
 
 python valorant_stats_tracker.py
+```
 
 Follow the on-screen instructions to choose actions such as viewing competitive or premier stats, managing the player list, and exporting data.
